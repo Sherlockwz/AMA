@@ -1,0 +1,86 @@
+{
+  "name": "@ama/openclaw-ama",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Official AMA adaptive memory implementation and OpenClaw memory plugin.",
+  "license": "Apache-2.0",
+  "homepage": "https://sherlockwz.github.io/AMA/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sherlockwz/AMA.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Sherlockwz/AMA/issues"
+  },
+  "keywords": [
+    "agent-memory",
+    "large-language-models",
+    "multi-agent-systems",
+    "openclaw",
+    "retrieval-augmented-generation"
+  ],
+  "engines": {
+    "node": ">=22.22.3"
+  },
+  "packageManager": "pnpm@11.19.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "index.ts",
+    "config.ts",
+    "types.ts",
+    "backend",
+    "cli",
+    "tools",
+    "capture.ts",
+    "recall.ts",
+    "service.ts",
+    "openclaw.plugin.json",
+    "python/server.py",
+    "python/requirements.txt",
+    "python/AdaptiveMemory",
+    "scripts",
+    "skills",
+    "SKILL.md",
+    "README.md",
+    "README_zh-CN.md",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "typebox": "1.3.3"
+  },
+  "openclaw": {
+    "extensions": [
+      "./index.ts"
+    ],
+    "runtimeExtensions": [
+      "./dist/index.js"
+    ],
+    "compat": {
+      "pluginApi": ">=2026.3.28",
+      "minGatewayVersion": ">=2026.3.28"
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "openclaw": "2026.7.1-2",
+    "tsup": "^8.5.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
+  },
+  "scripts": {
+    "build": "tsup index.ts --format esm --dts --sourcemap --clean",
+    "dev": "tsup index.ts --format esm --dts --sourcemap --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:python": "python3 -m unittest discover -s python/tests -p 'test_*.py'",
+    "check": "cmp -s SKILL.md skills/ama-memory/SKILL.md && pnpm typecheck && pnpm test && pnpm test:python && pnpm build"
+  }
+}

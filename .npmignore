@@ -1,0 +1,13 @@
+**/__pycache__/
+**/*.py[cod]
+.venv/
+node_modules/
+python/tests/
+**/locomo10.json
+**/outputForLocomo/
+**/Store/
+**/*.db
+**/*.faiss
+docs/
+tests/
+.github/

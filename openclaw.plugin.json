@@ -1,0 +1,142 @@
+{
+  "id": "openclaw-ama",
+  "name": "Memory (AMA)",
+  "description": "AMA adaptive memory for OpenClaw. Provides sidecar-backed memory retrieval and turn processing.",
+  "version": "0.1.0",
+  "kind": "memory",
+  "skills": [
+    "./skills"
+  ],
+  "setup": {
+    "providers": [
+      {
+        "id": "ama",
+        "authMethods": ["api-key"],
+        "envVars": [
+          "AMA_LLM_API_KEY",
+          "AMA_LLM_BASE_URL",
+          "AMA_EMBEDDING_URL"
+        ]
+      }
+    ],
+    "requiresRuntime": false
+  },
+  "contracts": {
+    "tools": [
+      "ama_process_turn",
+      "ama_process_assistant",
+      "ama_retrieve",
+      "ama_memory_list",
+      "ama_memory_forget",
+      "ama_session_end"
+    ]
+  },
+  "providerAuthChoices": [
+    {
+      "provider": "ama",
+      "method": "api-key",
+      "choiceId": "ama-api-key",
+      "choiceLabel": "AMA API Key",
+      "groupId": "ama",
+      "groupLabel": "AMA",
+      "optionKey": "llmApiKey",
+      "cliFlag": "--ama-api-key",
+      "cliOption": "--ama-api-key <key>",
+      "cliDescription": "OpenAI-compatible API key for AMA"
+    }
+  ],
+  "uiHints": {
+    "llmApiKey": {
+      "label": "LLM API Key",
+      "sensitive": true,
+      "help": "Use ${AMA_LLM_API_KEY} or a SecretRef instead of storing plaintext."
+    },
+    "llmBaseUrl": {
+      "label": "LLM Base URL",
+      "help": "OpenAI-compatible chat completions endpoint."
+    },
+    "embeddingApiUrl": {
+      "label": "Embedding API URL",
+      "help": "Embedding endpoint used by AMA."
+    },
+    "userId": {
+      "label": "Default User ID",
+      "placeholder": "default"
+    },
+    "modelMemory": {
+      "label": "Memory Model",
+      "placeholder": "gpt-4o-mini"
+    },
+    "temperature": {
+      "label": "Temperature",
+      "placeholder": "0.0"
+    },
+    "memoryWindowSize": {
+      "label": "Window Token Limit",
+      "placeholder": "100000",
+      "advanced": true
+    },
+    "memoryWindowLength": {
+      "label": "Window Item Limit",
+      "placeholder": "20",
+      "advanced": true
+    },
+    "turnRetrieve": {
+      "label": "Max Retrieval Rounds",
+      "placeholder": "1",
+      "advanced": true
+    },
+    "topK": {
+      "label": "Top K Results",
+      "placeholder": "10"
+    },
+    "dataDir": {
+      "label": "Data Directory",
+      "placeholder": "./ama-data"
+    },
+    "pythonExecutable": {
+      "label": "Python Executable",
+      "placeholder": ".venv/bin/python",
+      "advanced": true,
+      "help": "Optional Python path. AMA uses the repository .venv when available."
+    },
+    "autoCapture": {
+      "label": "Auto-Capture"
+    },
+    "autoRecall": {
+      "label": "Auto-Recall"
+    },
+    "sidecarPort": {
+      "label": "Sidecar Port",
+      "placeholder": "8321",
+      "advanced": true
+    },
+    "sidecarAutoStart": {
+      "label": "Auto-Start Sidecar",
+      "advanced": true
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "llmApiKey": { "type": "string" },
+      "llmBaseUrl": { "type": "string" },
+      "embeddingApiUrl": { "type": "string" },
+      "userId": { "type": "string" },
+      "modelMemory": { "type": "string" },
+      "temperature": { "type": "number" },
+      "memoryWindowSize": { "type": "number" },
+      "memoryWindowLength": { "type": "number" },
+      "turnRetrieve": { "type": "number" },
+      "topK": { "type": "number" },
+      "dataDir": { "type": "string" },
+      "pythonExecutable": { "type": "string" },
+      "autoCapture": { "type": "boolean" },
+      "autoRecall": { "type": "boolean" },
+      "sidecarPort": { "type": "number" },
+      "sidecarAutoStart": { "type": "boolean" }
+    },
+    "required": []
+  }
+}

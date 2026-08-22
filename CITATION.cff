@@ -1,0 +1,56 @@
+cff-version: 1.2.0
+message: "If you use AMA in your work, please cite the ACL 2026 paper."
+title: "AMA: Adaptive Memory via Multi-Agent Collaboration"
+type: software
+version: 0.1.0
+date-released: 2026-08-22
+repository-code: "https://github.com/Sherlockwz/AMA"
+url: "https://sherlockwz.github.io/AMA/"
+license: Apache-2.0
+authors:
+  - family-names: Huang
+    given-names: Weiquan
+  - family-names: Wang
+    given-names: Zixuan
+  - family-names: Lin
+    given-names: Hehai
+  - family-names: Wang
+    given-names: Sudong
+  - family-names: Xu
+    given-names: Bo
+  - family-names: Li
+    given-names: Qian
+  - family-names: Zhu
+    given-names: Beier
+  - family-names: Yang
+    given-names: Linyi
+  - family-names: Qin
+    given-names: Chengwei
+preferred-citation:
+  type: conference-paper
+  title: "AMA: Adaptive Memory via Multi-Agent Collaboration"
+  authors:
+    - family-names: Huang
+      given-names: Weiquan
+    - family-names: Wang
+      given-names: Zixuan
+    - family-names: Lin
+      given-names: Hehai
+    - family-names: Wang
+      given-names: Sudong
+    - family-names: Xu
+      given-names: Bo
+    - family-names: Li
+      given-names: Qian
+    - family-names: Zhu
+      given-names: Beier
+    - family-names: Yang
+      given-names: Linyi
+    - family-names: Qin
+      given-names: Chengwei
+  collection-title: "Findings of the Association for Computational Linguistics: ACL 2026"
+  year: 2026
+  start: 3099
+  end: 3120
+  doi: "10.18653/v1/2026.findings-acl.152"
+  url: "https://aclanthology.org/2026.findings-acl.152/"

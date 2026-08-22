@@ -1,0 +1,36 @@
+# macOS and editors
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+
+# Node.js
+node_modules/
+*.tgz
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# AMA runtime data
+ama-data/
+Store/
+*.faiss
+*.db
+*.db-shm
+*.db-wal
+outputForLocomo/
+results/
+
+# Coverage and temporary files
+coverage/
+.coverage
+tmp/

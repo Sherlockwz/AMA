@@ -1,0 +1,9 @@
+fastapi>=0.115,<1
+uvicorn>=0.30,<1
+requests>=2.32,<3
+tiktoken>=0.8,<1
+numpy>=1.26,<3
+faiss-cpu>=1.9,<2
+pydantic>=2.9,<3
+nltk>=3.9,<4
+python-dotenv>=1.0,<2

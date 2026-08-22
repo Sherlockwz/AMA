@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: AMA paper
+    url: https://aclanthology.org/2026.findings-acl.152/
+    about: Consult the paper for methodological and experimental details.
+  - name: Security report
+    url: https://github.com/Sherlockwz/AMA/security/advisories/new
+    about: Report vulnerabilities privately.

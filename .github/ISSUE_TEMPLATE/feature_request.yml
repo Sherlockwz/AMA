@@ -1,0 +1,31 @@
+name: Feature request
+description: Propose an improvement to AMA, its plugin, or its documentation.
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Motivation
+      description: What research or product need would this address?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: Describe the behavior, interface, and expected trade-offs.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Research implementation
+        - OpenClaw plugin or skill
+        - Evaluation and reproducibility
+        - Documentation
+        - Other
+    validations:
+      required: true
