@@ -3,20 +3,21 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="AMA is an adaptive multi-agent memory framework for long-term LLM interactions, published at Findings of ACL 2026.">
+    <meta name="description" content="Official code, research overview, results, and memory skill plugin for AMA: Adaptive Memory via Multi-Agent Collaboration (Findings of ACL 2026).">
     <meta name="theme-color" content="#071927">
     <meta property="og:title" content="AMA — Adaptive Memory via Multi-Agent Collaboration">
-    <meta property="og:description" content="Multi-granular memory, adaptive retrieval, and logic-driven knowledge maintenance for LLM agents.">
+    <meta property="og:description" content="Official AMA code: multi-granular memory, adaptive retrieval, logic-driven maintenance, experiments, and an OpenClaw/Harness Agent memory plugin.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://sherlockwz.github.io/AMA/">
     <meta property="og:image" content="https://sherlockwz.github.io/AMA/assets/ama-framework.png">
+    <meta name="twitter:card" content="summary_large_image">
     <link rel="canonical" href="https://sherlockwz.github.io/AMA/">
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;family=Manrope:wght@400;500;600;700&amp;family=Newsreader:opsz,wght@6..72,500;6..72,600&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <title>AMA — Adaptive Memory via Multi-Agent Collaboration</title>
+    <title>AMA — Official Code &amp; Research Overview</title>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -25,7 +26,9 @@
       <nav aria-label="Primary navigation">
         <a href="#method">Method</a>
         <a href="#results">Results</a>
-        <a href="#openclaw">OpenClaw</a>
+        <a href="#analysis">Analysis</a>
+        <a href="#case-study">Case Study</a>
+        <a href="#openclaw">Plugin</a>
         <a href="https://github.com/Sherlockwz/AMA">Code ↗</a>
       </nav>
     </header>
@@ -33,7 +36,7 @@
     <main id="main">
       <section class="hero" id="top">
         <div class="hero-grid" aria-hidden="true"></div>
-        <div class="eyebrow"><span>Findings of ACL 2026</span><span class="dot"></span><span>Agent Memory</span></div>
+        <div class="eyebrow"><span>Findings of ACL 2026</span><span class="dot"></span><span>Official Code</span></div>
         <h1>Memory that adapts<br><em>as dialogue evolves.</em></h1>
         <p class="hero-copy">AMA coordinates four specialized agents to construct, retrieve, verify, and refresh long-term memory—aligning the granularity of evidence with the reasoning task at hand.</p>
         <div class="hero-actions">
@@ -48,11 +51,24 @@
         </div>
       </section>
 
+      <section class="track-strip" aria-label="Repository contents">
+        <article>
+          <span class="track-number">01</span>
+          <div><h2>Research reference code</h2><p>The paper implementation, evaluation entry points, figures, and reproduction guidance for studying AMA.</p></div>
+          <a href="https://github.com/Sherlockwz/AMA/tree/main/python/AdaptiveMemory">View research code ↗</a>
+        </article>
+        <article>
+          <span class="track-number">02</span>
+          <div><h2>Memory skill &amp; plugin</h2><p>An AMA-based memory layer for OpenClaw and Harness Agent-style architectures, with automatic recall and capture.</p></div>
+          <a href="#openclaw">See the integration ↓</a>
+        </article>
+      </section>
+
       <section class="section intro" id="method">
         <div class="section-label">01 / The challenge</div>
         <div class="section-copy">
           <h2>Long-term memory is not just a retrieval problem.</h2>
-          <p>Fine details, stable facts, and high-level episodes demand different representations. As user information changes, a useful system must also detect conflicts and repair stale knowledge—not merely append more context.</p>
+          <p>Fine details, stable facts, and high-level episodes demand different representations. As user information changes, a useful system must detect conflicts and repair stale knowledge—not merely append more context.</p>
         </div>
       </section>
 
@@ -68,6 +84,24 @@
           <article><span class="role-number">02</span><h3>Judge</h3><p>Audits relevance and consistency, triggering bounded retrieval feedback when evidence is insufficient.</p></article>
           <article><span class="role-number">03</span><h3>Refresher</h3><p>Resolves logical conflicts through targeted updates or deletions, preserving knowledge over time.</p></article>
           <article><span class="role-number">04</span><h3>Constructor</h3><p>Transforms validated dialogue into traceable raw turns, atomic facts, and event-level episodes.</p></article>
+        </div>
+      </section>
+
+      <section class="method-detail">
+        <div class="method-copy">
+          <span class="kicker">Memory construction</span>
+          <h2>Three views of the same evolving conversation.</h2>
+          <p>The Constructor preserves exact turns as raw text, distills reusable facts, and synthesizes cross-turn episodes. Episodes are created when the topic shifts, the user explicitly asks to consolidate, or context becomes saturated.</p>
+          <ol>
+            <li><span>Retrieve</span> Rewrite the query, infer its intent, and select a memory granularity.</li>
+            <li><span>Judge</span> Check relevance and consistency; retry when the evidence is insufficient.</li>
+            <li><span>Refresh</span> Update or delete stale memories when a conflict is detected.</li>
+            <li><span>Construct</span> Store the validated interaction in complementary forms.</li>
+          </ol>
+        </div>
+        <div class="method-figure">
+          <div class="figure-heading"><span>Constructor detail</span><span>Raw → Fact → Episode</span></div>
+          <img src="assets/memory-construction.png" alt="How AMA constructs raw-text, fact-knowledge, and episode memories" loading="lazy">
         </div>
       </section>
 
@@ -87,27 +121,142 @@
 
       <section class="results" id="results">
         <div class="results-header">
-          <div class="section-label light">03 / Results</div>
+          <div class="section-label light">03 / Main results</div>
           <h2>Higher accuracy,<br>less context.</h2>
         </div>
         <div class="metric-grid">
-          <article><span>LoCoMo · GPT-4o-mini</span><strong>0.774</strong><p>Overall LLM score, ahead of the strongest reported memory baseline.</p></article>
-          <article><span>LongMemEval<sub>s</sub></span><strong>0.897</strong><p>Accuracy on knowledge-update questions requiring evolving user state.</p></article>
+          <article><span>LoCoMo · GPT-4o-mini</span><strong>0.774</strong><p>Overall LLM score, compared with 0.740 for the strongest listed memory baseline.</p></article>
+          <article><span>LongMemEval<sub>s</sub></span><strong>0.698</strong><p>Average accuracy across six question types, compared with 0.642 for Nemori.</p></article>
+          <article><span>Knowledge update</span><strong>0.897</strong><p>Accuracy on questions that require the system to follow evolving user information.</p></article>
           <article><span>Default K<sub>r</sub> = 2</span><strong>3,613</strong><p>Input tokens versus 18,625 for FullContext in the efficiency analysis.</p></article>
-          <article><span>Refresher ablation</span><strong>−32.9</strong><p>Percentage-point drop on knowledge update when the Refresher is removed.</p></article>
         </div>
         <p class="footnote">*3,613 tokens is approximately 19% of the 18,625-token FullContext input reported in the paper.</p>
+      </section>
+
+      <section class="benchmark section-wide">
+        <div class="section-heading">
+          <div>
+            <span class="section-label">04 / Benchmarks</span>
+            <h2>Consistent gains across model families.</h2>
+          </div>
+          <p>AMA is evaluated on LoCoMo (1,540 questions over long multi-session conversations) and LongMemEval<sub>s</sub> (500 questions with approximately 115K-token histories). Temperature is 0, retrieval uses top-k 10, and AMA defaults to at most two retrieval rounds.</p>
+        </div>
+
+        <div class="table-grid">
+          <div class="table-card">
+            <div class="table-title"><span>LoCoMo</span><small>Overall LLM Score</small></div>
+            <div class="table-scroll">
+              <table>
+                <thead><tr><th>Backbone</th><th>FullContext</th><th>Nemori</th><th>AMA</th></tr></thead>
+                <tbody>
+                  <tr><td>GPT-4o-mini</td><td>0.717</td><td>0.740</td><td class="best">0.774</td></tr>
+                  <tr><td>GPT-4.1-mini</td><td>0.786</td><td>0.774</td><td class="best">0.805</td></tr>
+                  <tr><td>Qwen3-30B-Instruct</td><td>0.733</td><td>0.756</td><td class="best">0.791</td></tr>
+                  <tr><td>Qwen3-8B-Instruct</td><td>0.696</td><td>0.686</td><td class="best">0.707</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="table-card">
+            <div class="table-title"><span>LongMemEval<sub>s</sub></span><small>Accuracy by question type</small></div>
+            <div class="table-scroll">
+              <table>
+                <thead><tr><th>Question type</th><th>FullContext</th><th>Zep</th><th>Nemori</th><th>AMA</th></tr></thead>
+                <tbody>
+                  <tr><td>Single-session preference</td><td>0.300</td><td class="best">0.533</td><td>0.467</td><td>0.467</td></tr>
+                  <tr><td>Single-session assistant</td><td>0.818</td><td>0.750</td><td>0.839</td><td class="best">0.964</td></tr>
+                  <tr><td>Temporal reasoning</td><td>0.365</td><td>0.541</td><td class="best">0.617</td><td>0.444</td></tr>
+                  <tr><td>Multi-session</td><td>0.406</td><td>0.474</td><td>0.511</td><td class="best">0.624</td></tr>
+                  <tr><td>Knowledge update</td><td>0.769</td><td>0.744</td><td>0.615</td><td class="best">0.897</td></tr>
+                  <tr><td>Single-session user</td><td>0.814</td><td>0.929</td><td>0.886</td><td class="best">0.986</td></tr>
+                  <tr class="average"><td>Average</td><td>0.548</td><td>0.632</td><td>0.642</td><td class="best">0.698</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <p class="table-note">AMA leads the average and excels on assistant-side, multi-session, knowledge-update, and user-specific questions. Temporal reasoning remains an important opportunity for future work.</p>
+      </section>
+
+      <section class="analysis" id="analysis">
+        <div class="section-heading light-heading">
+          <div>
+            <span class="section-label light">05 / Analysis</span>
+            <h2>A bounded loop finds the useful evidence.</h2>
+          </div>
+          <p>Most of the performance gain arrives in the first few retrieval rounds and then saturates, while token use and latency continue to grow approximately linearly. AMA therefore uses K<sub>r</sub> = 2 as its default balance.</p>
+        </div>
+
+        <div class="analysis-figures">
+          <figure><img src="assets/retrieval-rounds-locomo.png" alt="LoCoMo performance across retrieval rounds" loading="lazy"><figcaption>LoCoMo performance</figcaption></figure>
+          <figure><img src="assets/retrieval-rounds-longmemeval.png" alt="LongMemEval performance across retrieval rounds" loading="lazy"><figcaption>LongMemEval<sub>s</sub> performance</figcaption></figure>
+          <figure><img src="assets/retrieval-cost.png" alt="Token and latency costs across retrieval rounds" loading="lazy"><figcaption>Retrieval cost</figcaption></figure>
+        </div>
+
+        <div class="analysis-tables">
+          <div class="dark-table">
+            <div class="table-title"><span>Accuracy–cost trade-off</span><small>LoCoMo · GPT-4o-mini</small></div>
+            <div class="table-scroll">
+              <table>
+                <thead><tr><th>Method</th><th>Tokens</th><th>Latency</th><th>Score</th></tr></thead>
+                <tbody>
+                  <tr><td>FullContext</td><td>18,625</td><td>7.206 s</td><td>0.717</td></tr>
+                  <tr><td>RAG</td><td>5,800</td><td>2.983 s</td><td>0.300</td></tr>
+                  <tr><td>Nemori</td><td>2,925</td><td>3.152 s</td><td>0.740</td></tr>
+                  <tr><td>AMA (K<sub>r</sub>=1)</td><td>2,491</td><td>3.124 s</td><td>0.723</td></tr>
+                  <tr class="average"><td>AMA (K<sub>r</sub>=2)</td><td>3,613</td><td>3.910 s</td><td class="best">0.774</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="dark-table">
+            <div class="table-title"><span>What each component adds</span><small>Selected ablation results</small></div>
+            <div class="table-scroll">
+              <table>
+                <thead><tr><th>Memory setting</th><th>LoCoMo</th><th>Knowledge update</th></tr></thead>
+                <tbody>
+                  <tr><td>Raw text only</td><td>0.669</td><td>0.767</td></tr>
+                  <tr><td>Fact knowledge only</td><td>0.712</td><td>0.804</td></tr>
+                  <tr><td>Episode memory only</td><td>0.688</td><td>0.748</td></tr>
+                  <tr><td>All granularities, no Refresher</td><td>0.771</td><td>0.568</td></tr>
+                  <tr class="average"><td>Full AMA</td><td class="best">0.774</td><td class="best">0.897</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Multi-granular memory gives broad coverage; the Refresher is especially important when user information changes.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="case-study section-wide" id="case-study">
+        <div class="section-heading">
+          <div>
+            <span class="section-label">06 / Case study</span>
+            <h2>Remember the latest truth—and the right level of detail.</h2>
+          </div>
+          <div class="case-notes">
+            <p><strong>Conflict-aware refresh.</strong> When device information changes, the Retriever recalls the earlier fact, the Judge identifies the conflict, and the Refresher updates the stale memory instead of keeping contradictory records.</p>
+            <p><strong>Intent-aware granularity.</strong> A factual query routes to Fact Knowledge; an abstract summary query retrieves Episode Memory.</p>
+          </div>
+        </div>
+        <figure class="case-figure">
+          <img src="assets/case-study.png" alt="AMA case study showing conflict-aware refresh and intent-aware memory retrieval" loading="lazy">
+          <figcaption>Examples from the paper. The system couples retrieval with explicit relevance judgment and memory maintenance.</figcaption>
+        </figure>
       </section>
 
       <section class="openclaw" id="openclaw">
         <div class="openclaw-copy">
           <span class="kicker">Beyond the benchmark</span>
-          <h2>AMA, packaged for OpenClaw.</h2>
-          <p>The repository includes a memory plugin, an agent-facing skill, automatic recall and capture hooks, six explicit tools, and a local Python sidecar backed by SQLite and FAISS.</p>
+          <h2>AMA, packaged as a memory skill.</h2>
+          <p>The same repository also turns the research design into a usable memory layer for OpenClaw and Harness Agent-style systems: an agent-facing skill, automatic recall and capture hooks, six explicit tools, and a local Python sidecar backed by SQLite and FAISS.</p>
+          <p class="implementation-note"><strong>Two distinct deliverables:</strong> the Python research code serves as a reference implementation of the paper; the TypeScript plugin and skill package the design for agent runtimes. They share the AMA concepts but can be explored independently.</p>
           <div class="terminal" role="img" aria-label="OpenClaw installation commands">
             <div class="terminal-bar"><i></i><i></i><i></i><span>shell</span></div>
             <pre><code><span>$</span> git clone https://github.com/Sherlockwz/AMA.git
-<span>$</span> cd AMA && ./scripts/setup.sh
+<span>$</span> cd AMA &amp;&amp; ./scripts/setup.sh
 <span>$</span> openclaw plugins install --link .
 <span>$</span> openclaw ama doctor</code></pre>
           </div>
@@ -125,7 +274,7 @@
 
       <section class="citation">
         <div>
-          <span class="section-label">04 / Citation</span>
+          <span class="section-label">07 / Citation</span>
           <h2>Build on AMA.</h2>
         </div>
         <div>
@@ -142,7 +291,7 @@
 
     <footer>
       <a class="brand footer-brand" href="#top"><span>AMA</span><small>Adaptive Memory</small></a>
-      <p>Official implementation · Findings of ACL 2026 · Apache-2.0</p>
+      <p>Official code · Findings of ACL 2026 · Apache-2.0</p>
       <div><a href="https://github.com/Sherlockwz/AMA">GitHub</a><a href="https://aclanthology.org/2026.findings-acl.152/">Paper</a><a href="https://arxiv.org/abs/2601.20352">arXiv</a></div>
     </footer>
   </body>
