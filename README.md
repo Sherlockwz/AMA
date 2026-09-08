@@ -17,7 +17,8 @@
   <a href="README_zh-CN.md">中文说明</a> ·
   <a href="docs/reproduction.md">Reproduction</a> ·
   <a href="docs/architecture.md">Architecture</a> ·
-  <a href="docs/openclaw.md">OpenClaw adapter</a>
+  <a href="docs/openclaw.md">OpenClaw adapter</a> ·
+  <a href="https://sherlockwz.github.io/AMA/">Project Page</a>
 </p>
 
 ## News
