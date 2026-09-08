@@ -11,7 +11,7 @@ AMA（Adaptive Memory via Multi-Agent Collaboration）是一个面向 LLM Agent 
 
 ![AMA 框架](docs/assets/ama-framework.png)
 
-本仓库同时提供论文研究实现、基于 SQLite/FAISS 的 Python sidecar，以及可直接接入 OpenClaw 的记忆插件。
+本仓库同时提供 AMA 论文参考实现，以及面向 Harness Agent 架构的通用记忆 Skill。仓库内还包含一个可运行的 OpenClaw 参考适配器，通过 SQLite/FAISS sidecar、自动召回与写入 hooks，以及六个显式工具展示如何把该 Skill 接入具体 Agent 运行时。
 
 ## 快速开始
 
@@ -28,14 +28,14 @@ export AMA_LLM_BASE_URL="https://api.openai.com/v1/chat/completions"
 export AMA_EMBEDDING_URL="https://api.openai.com/v1/embeddings"
 ```
 
-安装 OpenClaw 插件：
+安装 OpenClaw 参考适配器：
 
 ```bash
 openclaw plugins install --link .
 openclaw plugins enable openclaw-ama
 ```
 
-完整的 OpenClaw 配置、工具列表和排错方法见 [`docs/openclaw.md`](docs/openclaw.md)，论文实验复现说明见 [`docs/reproduction.md`](docs/reproduction.md)。
+通用 Agent 操作策略见 [`SKILL.md`](SKILL.md)；完整的 OpenClaw 配置、工具列表和排错方法见 [`docs/openclaw.md`](docs/openclaw.md)，论文实验复现说明见 [`docs/reproduction.md`](docs/reproduction.md)。
 
 ## 论文结果
 

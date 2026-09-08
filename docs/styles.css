@@ -73,6 +73,12 @@ nav a:hover { color: var(--cyan); }
 .hero h1 { max-width: 940px; margin: 38px 0 28px; font: 500 clamp(4.3rem, 8.6vw, 8.6rem)/.88 "Newsreader", serif; letter-spacing: -.055em; }
 .hero h1 em { color: var(--cyan); font-weight: 500; }
 .hero-copy { max-width: 700px; margin: 0; color: rgba(255,255,255,.72); font-size: 1.14rem; }
+.paper-meta { max-width: 980px; margin-top: 30px; padding: 22px 0; border-top: 1px solid rgba(255,255,255,.16); border-bottom: 1px solid rgba(255,255,255,.16); }
+.paper-meta p { margin: 0; }
+.paper-meta .authors { color: rgba(255,255,255,.88); font-size: .83rem; }
+.paper-meta .affiliations { margin-top: 8px; color: rgba(255,255,255,.58); font-size: .7rem; }
+.paper-meta .author-notes { margin-top: 5px; color: var(--cyan); font: 500 .6rem/1.5 "DM Mono", monospace; text-transform: uppercase; letter-spacing: .06em; }
+.paper-meta sup { color: var(--cyan); }
 .hero-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; margin-top: 38px; }
 .button { display: inline-flex; align-items: center; justify-content: space-between; gap: 32px; min-width: 210px; padding: 13px 17px; border: 1px solid transparent; font: 600 .76rem/1.2 "Manrope", sans-serif; text-decoration: none; }
 .button.primary { background: var(--coral); color: var(--ink); }
@@ -160,6 +166,10 @@ tbody tr:last-child td { border-bottom: 0; }
 td.best { color: var(--blue); font-weight: 700; }
 tr.average { font-weight: 700; background: rgba(75,214,208,.1); }
 .table-note { max-width: 780px; margin: 26px 0 0 auto; color: var(--muted); font-size: .78rem; }
+.card-note { margin: 0; padding: 14px 18px; color: var(--muted); border-top: 1px solid var(--border); font-size: .67rem; }
+.result-takeaways { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-top: 28px; border-top: 1px solid var(--border); border-left: 1px solid var(--border); }
+.result-takeaways p { margin: 0; padding: 20px; color: var(--muted); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); font-size: .75rem; }
+.result-takeaways strong { display: block; margin-bottom: 7px; color: var(--ink); font: 500 1.15rem/1.15 "Newsreader", serif; }
 
 .analysis { padding: 120px max(40px, calc((100vw - 1180px) / 2)); color: white; background: #0c2536; }
 .light-heading > p { color: rgba(255,255,255,.62); }
@@ -187,6 +197,7 @@ tr.average { font-weight: 700; background: rgba(75,214,208,.1); }
 .openclaw { display: grid; grid-template-columns: 1.2fr .8fr; gap: 100px; width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding: 130px 0; }
 .openclaw-copy > p { max-width: 630px; color: var(--muted); }
 .openclaw-copy .implementation-note { margin: 24px 0 0; padding-left: 18px; border-left: 3px solid var(--coral); font-size: .82rem; }
+.openclaw-copy > p code { color: var(--blue); font: 500 .78rem/1 "DM Mono", monospace; }
 .terminal { overflow: hidden; margin: 38px 0 22px; color: white; background: var(--ink); border-radius: 4px; box-shadow: 0 24px 55px rgba(7,25,39,.16); }
 .terminal-bar { display: flex; align-items: center; gap: 7px; height: 34px; padding: 0 12px; border-bottom: 1px solid rgba(255,255,255,.12); }
 .terminal-bar i { width: 7px; height: 7px; background: var(--coral); border-radius: 50%; }
@@ -197,6 +208,8 @@ tr.average { font-weight: 700; background: rgba(75,214,208,.1); }
 .terminal code span { color: var(--cyan); }
 .button.dark { background: var(--ink); color: white; }
 .button.dark:hover { background: var(--blue); }
+.skill-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 22px; }
+.adapter-link { color: var(--blue); font: 600 .72rem/1 "DM Mono", monospace; text-underline-offset: 5px; }
 .tool-list { align-self: center; border-top: 1px solid var(--border); }
 .tool-list div { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 20px 0; border-bottom: 1px solid var(--border); }
 .tool-list code { font: 500 .72rem/1 "DM Mono", monospace; }
@@ -207,6 +220,12 @@ tr.average { font-weight: 700; background: rgba(75,214,208,.1); }
 .citation > div:last-child { max-width: 700px; }
 .citation-links { display: flex; gap: 20px; margin-top: 26px; }
 .citation-links a { font: 600 .72rem/1 "DM Mono", monospace; text-underline-offset: 5px; }
+.bibtex-block { overflow: hidden; margin-top: 28px; color: white; background: var(--ink); border-radius: 4px; }
+.bibtex-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,.13); }
+.bibtex-bar span { font: 500 .62rem/1 "DM Mono", monospace; color: rgba(255,255,255,.48); text-transform: uppercase; letter-spacing: .08em; }
+.bibtex-bar button { padding: 7px 10px; color: var(--cyan); background: transparent; border: 1px solid rgba(75,214,208,.45); font: 500 .62rem/1 "DM Mono", monospace; cursor: pointer; }
+.bibtex-bar button:hover, .bibtex-bar button:focus-visible { color: var(--ink); background: var(--cyan); outline: none; }
+.bibtex-block pre { overflow-x: auto; margin: 0; padding: 18px; font: 400 .66rem/1.65 "DM Mono", monospace; }
 
 footer { display: flex; justify-content: space-between; align-items: center; gap: 30px; padding: 42px max(40px, calc((100vw - 1180px) / 2)); color: rgba(255,255,255,.65); background: var(--ink); font-size: .68rem; }
 .footer-brand { color: white; }
@@ -233,6 +252,7 @@ footer > div a { text-underline-offset: 4px; }
   .metric-grid { grid-template-columns: repeat(2, 1fr); }
   .section-heading, .table-grid, .analysis-tables { grid-template-columns: 1fr; }
   .section-heading { gap: 26px; }
+  .result-takeaways { grid-template-columns: 1fr; }
   .analysis-figures { grid-template-columns: 1fr; }
   .analysis-figures img { max-height: 520px; }
   .openclaw { grid-template-columns: 1fr; gap: 60px; }
@@ -241,6 +261,8 @@ footer > div a { text-underline-offset: 4px; }
 
 @media (max-width: 600px) {
   .site-header { width: calc(100% - 28px); }
+  .site-header .brand { align-items: center; }
+  .site-header .brand small { max-width: 165px; font-size: .52rem; line-height: 1.25; }
   .hero { padding-left: 20px; padding-right: 20px; }
   .hero-actions { align-items: stretch; flex-direction: column; }
   .button { width: 100%; }
@@ -273,6 +295,8 @@ footer > div a { text-underline-offset: 4px; }
   .tool-list div { flex-direction: column; align-items: flex-start; gap: 6px; }
   .citation { padding: 80px 20px; }
   .citation-links { flex-direction: column; }
+  .skill-actions { align-items: stretch; flex-direction: column; }
+  .adapter-link { padding: 8px 0; text-align: center; }
   footer { flex-direction: column; align-items: flex-start; padding: 38px 20px; }
 }
 

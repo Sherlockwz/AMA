@@ -10,39 +10,99 @@
 </p>
 
 <p align="center">
-  Official research implementation and OpenClaw memory plugin for <strong>AMA</strong>.
+  Official code and reusable memory skills for <strong>AMA</strong> (Findings of ACL 2026).
 </p>
 
 <p align="center">
   <a href="README_zh-CN.md">中文说明</a> ·
   <a href="docs/reproduction.md">Reproduction</a> ·
-  <a href="docs/openclaw.md">OpenClaw setup</a> ·
-  <a href="docs/architecture.md">Architecture</a>
+  <a href="docs/architecture.md">Architecture</a> ·
+  <a href="docs/openclaw.md">OpenClaw adapter</a>
 </p>
 
-AMA is a long-term memory framework for LLM agents. It coordinates four specialized agents—**Constructor**, **Retriever**, **Judge**, and **Refresher**—to build multi-granular memories, route each query to the appropriate granularity, verify retrieved evidence, and keep evolving knowledge consistent.
+## News
 
-This repository contains:
+- **2026-08-22:** We released the AMA research code, project page, and reusable memory skill with an OpenClaw reference adapter.
 
-- the research implementation used to study AMA;
-- an OpenAI-compatible Python sidecar backed by SQLite and FAISS;
-- an OpenClaw memory plugin with automatic recall and capture;
-- reproducibility, architecture, and deployment documentation.
+## Table of contents
+
+- [Overview](#overview)
+- [How AMA works](#how-ama-works)
+- [Two ways to use this repository](#two-ways-to-use-this-repository)
+- [Headline results](#headline-results)
+- [Repository layout](#repository-layout)
+- [Setup](#setup)
+- [Research code](#research-code)
+- [Memory skill for Harness Agents](#memory-skill-for-harness-agents)
+- [Citation](#citation)
 
 ## Overview
+
+Long-term agent memory is more than storing and retrieving old messages. Different questions require different levels of detail, and user information can change over time. A useful memory system must therefore select the right representation, verify whether retrieved evidence is sufficient, and repair outdated knowledge instead of continually accumulating contradictions.
+
+AMA addresses this problem through four collaborating agents and three complementary memory granularities:
 
 ![AMA framework](docs/assets/ama-framework.png)
 
 | Agent | Responsibility |
 | --- | --- |
-| Constructor | Builds raw-text, fact-knowledge, and episodic memories. |
-| Retriever | Rewrites queries and adaptively routes them to the best memory granularity. |
-| Judge | Checks relevance and logical consistency, requesting another retrieval round when needed. |
-| Refresher | Updates or removes conflicting memories to preserve temporal consistency. |
+| **Constructor** | Builds traceable raw-text memory, atomic fact knowledge, and event-level episode memory. |
+| **Retriever** | Rewrites the current query and routes it to the memory granularity that best matches its intent. |
+| **Judge** | Checks relevance and logical consistency, and requests another bounded retrieval round when evidence is insufficient. |
+| **Refresher** | Updates or removes conflicting memories so that stored knowledge follows the latest valid user state. |
 
-With GPT-4o-mini on LoCoMo, AMA reaches an overall LLM score of **0.774**. At the default retrieval depth \(K_r=2\), it processes **3,613 tokens**—about **19%** of the 18,625-token FullContext input—and records **3.91 s** latency versus **7.21 s** for FullContext. On LongMemEval\(_s\), AMA reaches **0.698** average accuracy and **0.897** on knowledge-update questions.
+| Memory form | What it preserves | Best suited for |
+| --- | --- | --- |
+| **Raw Text** | Exact wording, conversational traces, and fine-grained temporal details | Questions requiring precise evidence |
+| **Fact Knowledge** | Atomic and reusable information extracted from dialogue | Direct factual recall and user attributes |
+| **Episode Memory** | Events and abstractions synthesized across multiple turns | Summaries and higher-level reasoning |
 
-## Installation
+## How AMA works
+
+For each incoming turn, AMA executes a coordinated memory lifecycle:
+
+1. **Retrieve:** rewrite the query, infer its information need, and search the appropriate memory granularity.
+2. **Judge:** filter irrelevant evidence and decide whether to pass, retry retrieval, or refresh conflicting memory.
+3. **Refresh:** update stale information or delete it only when the user explicitly asks to forget it or a conflicting record has expired.
+4. **Construct:** preserve the validated interaction as raw text, fact knowledge, and—when appropriate—an episode.
+
+This loop separates memory construction, retrieval, verification, and maintenance into explicit roles while keeping the number of retrieval rounds bounded.
+
+## Two ways to use this repository
+
+| Path | When to use it | Start here |
+| --- | --- | --- |
+| **Research reference implementation** | Study AMA, inspect the original Python pipeline, or reproduce the LoCoMo and LongMemEval`_s` experiments | [`python/AdaptiveMemory`](python/AdaptiveMemory), [reproduction guide](docs/reproduction.md) |
+| **Harness Agent memory skill** | Add AMA-style long-term memory behavior to an agent harness; use the included OpenClaw plugin as a complete reference adapter | [`SKILL.md`](SKILL.md), [architecture guide](docs/architecture.md), [OpenClaw adapter](docs/openclaw.md) |
+
+## Headline results
+
+| Evaluation | AMA | Reference point |
+| --- | ---: | ---: |
+| LoCoMo overall LLM Score (GPT-4o-mini) | **0.774** | Nemori 0.740; FullContext 0.717 |
+| LongMemEval`_s` average accuracy | **0.698** | Nemori 0.642 |
+| LongMemEval`_s` knowledge-update accuracy | **0.897** | AMA without Refresher 0.568 |
+| LoCoMo input tokens at `K_r=2` | **3,613** | FullContext 18,625 |
+
+AMA achieves the highest reported overall LoCoMo LLM Score across all four tested backbones. On LongMemEval`_s`, the strongest gains appear in assistant-side recall, multi-session reasoning, knowledge updates, and user-specific information. Temporal reasoning remains a limitation: Nemori outperforms AMA in that category. See the [project page](https://sherlockwz.github.io/AMA/) for the complete result tables, efficiency analysis, retrieval-round study, ablations, and case study.
+
+## Repository layout
+
+```text
+AMA/
+├── python/AdaptiveMemory/   # paper reference implementation and evaluation code
+├── python/server.py         # local AMA HTTP sidecar
+├── backend/                 # runtime ↔ sidecar adapter
+├── tools/                   # six agent-callable AMA memory operations
+├── skills/ama-memory/       # distributable memory skill
+├── docs/                    # project page and technical guides
+├── tests/                   # TypeScript and Python tests
+├── index.ts                 # OpenClaw reference-adapter entry point
+├── openclaw.plugin.json     # OpenClaw plugin manifest
+└── SKILL.md                 # portable agent operating policy
+```
+
+## Setup
 
 ### Requirements
 
@@ -50,8 +110,6 @@ With GPT-4o-mini on LoCoMo, AMA reaches an overall LLM score of **0.774**. At th
 - Node.js 22.22.3+ (Node.js 24.15+ is also supported)
 - pnpm 11+
 - an OpenAI-compatible chat-completions endpoint and embedding endpoint
-
-### Set up the repository
 
 ```bash
 git clone https://github.com/Sherlockwz/AMA.git
@@ -68,18 +126,33 @@ export AMA_LLM_BASE_URL="https://api.openai.com/v1/chat/completions"
 export AMA_EMBEDDING_URL="https://api.openai.com/v1/embeddings"
 ```
 
-The implementation accepts any provider exposing compatible chat-completions and embeddings APIs. Copy [`.env.example`](.env.example) when you need a local template.
+The implementation accepts providers exposing compatible chat-completions and embeddings APIs. Copy [`.env.example`](.env.example) when you need a local template.
 
-## OpenClaw plugin
+## Research code
 
-Install the local checkout during development:
+The original Python implementation lives in [`python/AdaptiveMemory`](python/AdaptiveMemory). Evaluation entry points are under [`python/AdaptiveMemory/Core`](python/AdaptiveMemory/Core). Benchmark datasets are not redistributed; follow the [reproduction guide](docs/reproduction.md) to obtain and place them.
+
+Run the local sidecar for a direct smoke test:
+
+```bash
+.venv/bin/python -m uvicorn python.server:app --host 127.0.0.1 --port 8321
+curl http://127.0.0.1:8321/health
+```
+
+## Memory skill for Harness Agents
+
+[`SKILL.md`](SKILL.md) expresses AMA as a portable operating policy for agent-harness architectures. It describes when an agent should retrieve prior context, capture user and assistant turns, synthesize episodes, inspect state, and honor explicit deletion requests. A harness can load this policy and bind the six AMA operations through its own tool interface.
+
+The repository also includes a complete **OpenClaw reference adapter** with automatic recall/capture hooks, CLI commands, and a managed SQLite/FAISS sidecar:
 
 ```bash
 openclaw plugins install --link .
 openclaw plugins enable openclaw-ama
+openclaw ama doctor
 ```
 
-Then add the following to `~/.openclaw/openclaw.json`:
+<details>
+<summary><strong>Minimal OpenClaw configuration</strong></summary>
 
 ```json5
 {
@@ -89,9 +162,7 @@ Then add the following to `~/.openclaw/openclaw.json`:
     entries: {
       "openclaw-ama": {
         enabled: true,
-        hooks: {
-          allowConversationAccess: true
-        },
+        hooks: { allowConversationAccess: true },
         config: {
           llmApiKey: "${AMA_LLM_API_KEY}",
           llmBaseUrl: "${AMA_LLM_BASE_URL}",
@@ -107,43 +178,9 @@ Then add the following to `~/.openclaw/openclaw.json`:
 }
 ```
 
-`allowConversationAccess` is OpenClaw's explicit permission for the `agent_end` hook to read the completed turn. It is required for `autoCapture`; omit it and set `autoCapture: false` if you only want explicit tool-based writes.
+</details>
 
-Restart the OpenClaw gateway and verify the integration:
-
-```bash
-openclaw ama doctor
-openclaw ama stats
-openclaw ama search "What do you remember about me?"
-```
-
-See the complete [OpenClaw setup guide](docs/openclaw.md) for Git installation, manual sidecar startup, configuration options, tools, and troubleshooting.
-
-## Research code
-
-The original Python implementation lives in [`python/AdaptiveMemory`](python/AdaptiveMemory). For a direct sidecar smoke test:
-
-```bash
-.venv/bin/python -m uvicorn python.server:app --host 127.0.0.1 --port 8321
-curl http://127.0.0.1:8321/health
-```
-
-Evaluation entry points are in [`python/AdaptiveMemory/Core`](python/AdaptiveMemory/Core). Benchmark datasets are not redistributed in this repository; follow [the reproduction guide](docs/reproduction.md) to obtain and place them.
-
-## Repository structure
-
-```text
-AMA/
-├── python/AdaptiveMemory/   # research implementation
-├── python/server.py         # local HTTP sidecar
-├── backend/                 # OpenClaw ↔ sidecar adapter
-├── tools/                   # six agent-callable AMA tools
-├── docs/                    # guides, project page, and paper figures
-├── tests/                   # TypeScript and Python unit tests
-├── index.ts                 # OpenClaw plugin entry
-├── openclaw.plugin.json     # plugin manifest
-└── SKILL.md                 # agent-facing operating instructions
-```
+See the [OpenClaw adapter guide](docs/openclaw.md) for Git installation, configuration options, tool definitions, permissions, and troubleshooting.
 
 ## Validation
 
@@ -151,7 +188,7 @@ AMA/
 ./scripts/check.sh
 ```
 
-This runs strict TypeScript checks, Vitest, Python unit tests, Python bytecode compilation, and the production bundle.
+This runs strict TypeScript checks, Vitest, Python unit tests, bytecode compilation, and the production bundle.
 
 ## Citation
 
